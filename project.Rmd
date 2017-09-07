@@ -1,0 +1,557 @@
+---
+output:
+  html_document: 
+    fig_width: 6
+    fig_height: 4
+  pdf_document: default
+---
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE,packages }
+library(ggplot2)
+library(GGally)
+library(RColorBrewer)
+
+```
+
+#Short description
+
+I have selected the red wine data set and explored it.This dataset has 12 variables.Out of these variables,I have explored data to find the variables that would most likely affect the quality of wine.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE, "Loading Data"}
+
+rw<-read.csv("wineQualityReds.csv")
+data(rw)
+summary(rw)
+
+```
+
+#Univariate Plots Section
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots}
+
+ggplot(aes(fixed.acidity),data=rw)+
+geom_histogram(binwidth=0.1,fill=I("#0000FF"),color=I("black"))+
+scale_x_continuous(breaks=seq(4,16,1))
+summary(rw$fixed.acidity)
+
+```
+
+In this plot, most of the values of the fixed acidity is between 6 and 11
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(volatile.acidity),data=rw)+
+geom_histogram(binwidth=0.01,fill=I("#0000FF"),color=I("black"))
+summary(rw$volatile.acidity)
+
+```
+
+In the plot of volatile acidity most of values are between 0.2 and 0.8.The mean is 0.5200 and the median is 0.5278. The plot seems to be normally distributed.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(citric.acid),data=rw)+
+geom_histogram(binwidth=0.01,fill=I("#0000FF"),color=I("black"))
+summary(rw$citric.acid)
+
+```
+
+In this plot, there are higher zero value of citric acid than any other value of citric acid. With very few exceptions, most aprt of the curve seems to be uniform with mean and median 0.271 and 0.260 respectively. 
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(residual.sugar),data=rw)+
+geom_histogram(binwidth=0.1,fill=I("#0000FF"),color=I("black"))+
+  scale_x_continuous(breaks = seq(0,16,1))
+summary(rw$residual.sugar)
+
+```
+
+The plot seem to be positively skewed with most of the values lying between 0 and 4.The median and mean values  with values 2.2 and 2.539 respectively
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(log10(residual.sugar)),data=rw)+
+geom_histogram(binwidth=0.1,fill=I("#0000FF"),color=I("black"))
+summary(rw$residual.sugar)
+
+```
+
+If I turn the residual sugar into log10, I am getting a somewhat normal curve
+
+
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(chlorides),data=rw)+
+geom_histogram(binwidth=0.01,fill=I("#0000FF"),color=I("black"))
+summary(rw$chlorides)
+
+```
+
+This plot seems to be somewhat positively skewed with most of the values lying between 0 and 0.15
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(free.sulfur.dioxide),data=rw)+
+geom_histogram(binwidth=1,fill=I("#0000FF"),color=I("black"))
+summary(rw$free.sulfur.dioxide)
+
+```
+
+Even in this plot, the plot seem to be positively skewed. Most of the values lying between 2 and 40
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(total.sulfur.dioxide),data=rw)+
+geom_histogram(binwidth=2,fill=I("#0000FF"),color=I("black"))
+summary(rw$total.sulfur.dioxide)
+
+```
+
+In this plot, few values near 100 seem to be missing. And all the values seem to be an integer with few values being outlier.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(density),data=rw)+
+geom_histogram(binwidth=0.0001,fill=I("#0000FF"),color=I("black"))
+summary(rw$density)
+
+```
+
+This plot is normally distributed, The values of median and mean is almost equal.
+
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(pH),data=rw)+
+geom_histogram(binwidth=0.1,fill=I("#0000FF"),color=I("black"))
+summary(rw$pH)
+
+```
+
+This plot is alo normally distributed with its mean and median almost equal.Median value is 3.310 and mean value is 3.310 .
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(sulphates),data=rw)+
+geom_histogram(binwidth=0.1,fill=I("#0000FF"),
+               color=I("black"))
+summary(rw$sulphates)
+
+```
+
+This plot seems to be positively skewed with mean and median value 0.6581 and 0.6200 respectively
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(alcohol),data=rw)+
+geom_histogram(binwidth=0.1,fill=I("#0000FF"),
+               color=I("black"))
+summary(rw$alcohol)
+
+```
+
+In this plot, most of the values seem to be in between 5 and 12.Median and mean are 10.20 and  10.42 respectively.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(quality),data=rw)+
+geom_histogram(binwidth=0.1,fill=I("#0000FF"),color=I("black"))
+
+```
+
+This plot has higher number of quality 5 and 6 wine than any other quality
+
+#Univariate Analysis
+
+The following are observation I made 
+1)This dataset has 1599 with 12 variables.
+2)Most of the samples have quality 5 and 6 with values 681 and 638 respectively.
+3)Most of the residual sugar values are between 1 and 3
+4)All the pH values are between 2.7 and 4.
+
+I think parameters like pH,sulphates,chlorides, SO2 will most likely affect the quality of the redwine.I saw that the distribution of the residual sugar being right skewed with mean=  2.539 .So,I took log of residual sugar value to get normal distribution.
+
+# Bivariate Plots Section
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE, fig.width=12, fig.height=6,Bivariate_Plots}
+
+rw1<-rw[,-1]
+rw_samp <- rw1[sample(1:length(rw$quality), 1000),]
+ggpairs(rw_samp)
+
+```
+
+This matrix plot is to see the correlation of all the variables with eachother.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(x=factor(quality),y=fixed.acidity),data=rw)+
+  geom_boxplot(alpha = .5,color = 'blue')+
+  geom_jitter(alpha=0.2)+
+  xlab("quality")+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+
+  ggtitle("Fixed acidity Vs quality")
+by(rw$fixed.acidity,rw$quality,summary)
+
+
+```
+
+When I want to explore the relation between fixed.acidity and quality of wine, it seems like quality of the wine increases as fixed acidity increases except when the quality is 4. I don't why this happens when quality is 4.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(as.factor(quality),citric.acid),data=rw)+
+ geom_boxplot(alpha = .5,color = 'blue')+
+  geom_jitter(alpha=0.2)+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+
+  xlab("quality")+
+  ggtitle("Citric acid Vs quality")
+by(rw$citric.acid,rw$quality,summary)
+
+```
+
+It seems that mean citric acid value seem to be increasing as the quality of the wine increases. Wine with quality 3 seem to have mean citric acid value of 0.1710 and the wine quality 8 has the mean of 0.3911
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(as.factor(quality),residual.sugar),data=rw)+
+ geom_boxplot(alpha = .5,color = 'blue')+
+  geom_jitter(alpha=0.2)+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+
+  xlab("quality")+
+  ggtitle("Residual sugar Vs quality")
+by(rw$residual.sugar,rw$quality,summary)
+
+```
+
+I just want to plot the relation between the quality and residual sugar.When I saw the plot results,I could not find any definite trend in the correlation.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(as.factor(quality),chlorides),data=rw)+
+  geom_boxplot(alpha = .5,color = 'blue')+
+  geom_jitter(alpha=0.1)+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+
+  xlab("quality")+
+  ggtitle("Chlorides Vs quality")
+by(rw$chlorides,rw$quality,summary)
+
+```
+
+I want to see how chloride component affect the quality of red wine. So, when I saw that relation it seems quality of wine seem to increase when the mean of the chloride level decreases as you can see. Except that the mean chloride increased in quality 5 wine,I think quality 5 had too many outliers so the mean would have increased.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(as.factor(quality),free.sulfur.dioxide),data=rw)+
+  geom_boxplot(alpha = .5,color = 'blue')+
+  geom_jitter(alpha=0.2)+stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+
+  xlab("quality")+
+  ggtitle("free sulfur dioxide Vs quality")
+by(rw$free.sulfur.dioxide,rw$quality,summary)
+
+```
+
+ I want to explore how the free sulfur dioxide affects the quality of the wine.So, when I saw the trend of the mean and the median value both showed the same trend like both had higher value for the low quality wine and as the quality of wine increased their value also increased until quality 5 and again mean and median of suphur dioxide started to decrease until quality 8 wine. Since the values increase and decrease I could not find a relation between the quality and the free sulphur dioxide.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(as.factor(quality),total.sulfur.dioxide),data=rw)+
+ geom_boxplot(alpha = .5,color = 'blue')+
+  geom_jitter(alpha=0.2)+stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+
+  xlab("quality")+
+  ggtitle("total sulfur dioxide Vs quality")
+by(rw$total.sulfur.dioxide,rw$quality,summary)
+
+```
+
+I just wanted to see whether total sulfur dioxide behave like the free sulfur dioxide.As expected even total sulphur dioxide showed same kind of trend with respect to the quality of red wine.But one noticeable thing is quality 5 red wine does not have an outlier as free sulfur dioxide had. Still the mean total sulfur dioxide increased in quality 5 wine from quality 4 wine.One more thing is even though the quality 7 had the extreme outlier the mean of total sulpfur dioxide decreased.From this suspect that total sulphur dioxide does not have much of the influence in the quality.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(as.factor(quality),density),data=rw)+
+  geom_boxplot(alpha = .5,color = 'blue')+
+  geom_jitter(alpha=0.2)+stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+
+  xlab("quality")+
+  ggtitle("Density Vs quality")
+by(rw$density,rw$quality,summary)
+
+```
+
+When I tried exploring the relation between the quality and the density.I could not find any pattern in the plot.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(as.factor(quality),pH),data=rw)+
+  geom_boxplot(alpha = .5,color = 'blue')+
+  geom_jitter(alpha=0.2)+stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+
+  xlab("quality")+
+  ggtitle("pH Vs quality")
+by(rw$pH,rw$quality,summary)
+
+```
+
+I want to explore the relation between the quality of red wine and its pH value as PH describes the acidity and basicity of the wine.So, when I explored it, I saw that when the quality of the wine increases, the median and mean of the pH value of each quality wine decreases.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(as.factor(quality),sulphates),data=rw)+
+  geom_boxplot(alpha = .5,color = 'blue')+
+  geom_jitter(alpha=0.2)+stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+
+  xlab("quality")+
+  ggtitle("Sulphates vs quality")
+by(rw$sulphates,rw$quality,summary)
+
+```
+
+The interesting thing I noticed is by looking at the mean and the median of the sulphates, they seem to be increasing as the quality of wine increases from 3 to 8
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(as.factor(quality),alcohol),data=rw)+
+ geom_boxplot(alpha = .5,color = 'blue')+
+  geom_jitter(alpha=0.2)+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+
+  xlab("quality")+
+  ggtitle("alcohol vs quality")
+by(rw$alcohol,rw$quality,summary)
+
+```
+
+As I made a plot between the quality and alcohol,I could not find any definite relation between the two.
+  
+#Bivariate Analysis
+
+Four important things I noticed in the bivariate analysis
+1)Sulphates seem to be directly proportional to the quality of wine.
+2)citric acid is directly proportional to the quality of wine.
+3)pH seem to be inversely proportional to the quality of wine.
+4)chloride seem to be inversely proportional to the quality of wine.
+
+So, to summarise sulphates and citric acid are directly proportional to quality of wine.On contrary,pH and chloride are inversely proportional to the quality of wine.
+
+#Multivariate_Plots
+
+```{r  echo=FALSE, message=FALSE,warning=FALSE,Multivariate_Plots}
+ 
+ggplot(aes(fixed.acidity,volatile.acidity,color=as.factor(quality)),
+       data=rw)+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+
+ggtitle("fixed acidity Vs volatile acidity by Quality")
+
+```
+
+I just want to know how volatile acidity and fixed acidity affects the quality of the wine. From the plot, I could say that the high quality wine like 7 and 8 have very less volatile acidity which less than 0.8.The less quality wine like 3 and 4 seem to have volatile acidity higher than 1.0.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(citric.acid,sulphates,color=as.factor(quality)),data=rw)+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))
+  ggtitle("citric acid Vs sulphates by Quality")
+
+```
+
+I want to see how the relation between the sulphates and citric acid affects the quality of wine.As I see that most of the wine with quality 7 and 8 have sulphates between 0.5 and around 1.5 as well as critic acid between 0 and 0.75. On contrary, most of the wine with less quality 3 and 4 seem to have citric acid value between 0 and 0.5 as well as sulphates less than 0.75.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(pH,sulphates,color=as.factor(quality)),data=rw)+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+
+ggtitle("pH Vs sulphates by quality")
+
+```
+
+ As I saw that sulphates and pH have some relation to quality, I want to see how all these parameters vary with respect to each other.From my analysis I saw that most of the lower quality wine ie quality 3 wine has pH between 3.25 and 3.75 and also has sulphates with values below 0.75.On contrary most of the best quality wine ie 7 and 8 have sulphates  value between 0 and 1.5 and pH value between 3 and 3.75.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(pH,chlorides,color=as.factor(quality)),data=rw)+
+geom_point()+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+
+  ggtitle("pH Vs chlorides by quality")
+
+```
+
+In this plot, the highest quality of wine 7,8 has chlorides value between 0 and 0.1 as well pH value between 3 and 3.75.Lowest quality of wine has chlorides value above 0.1 and pH value between 3 and 3.75.    
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(chlorides,sulphates,color=as.factor(quality)),data=rw)+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+
+  ggtitle("chlorides Vs sulphates by quality")
+
+```
+
+First two rows give range of sulphates and chlorides when quality of wine is 7 and 8.The next two rows give the range of sulphates and chlorides when the quality of wine is 3 and 4.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+range(subset(rw,quality%in%c("7","8"))$sulphates)
+range(subset(rw,quality%in%c("7","8"))$chlorides)
+range(subset(rw,quality%in%c("3","4"))$sulphates)
+range(subset(rw,quality%in%c("3","4"))$chlorides)
+
+```
+
+From the plot, I would say chlorides and sulphates value of high quality wine are in the range 0.012 to 0.358 and 0.39 to 1.36 respectively.For low quality wine the values of chlorides and sulphates are in the range 0.045 to 0.61 and  0.33 to 2.00 respectively.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(pH,citric.acid,color=as.factor(quality)),data=rw)+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+
+ggtitle("pH Vs citric.acid by quality")
+range(rw$citric.acid)
+
+```
+
+The first two rows of values are the range of values of the citric acid and pH for the quality 7 and 8 wine.Second two rows of values are the range of values of the citric acid and pH for the quality 3 and 4 wine.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+range(subset(rw,quality%in%c("7","8"))$citric.acid)
+range(subset(rw,quality%in%c("7","8"))$pH)
+range(subset(rw,quality%in%c("3","4"))$citric.acid)
+range(subset(rw,quality%in%c("3","4"))$pH)
+
+```
+
+From the plot, it is noticable that for the high quality wine pH and citric acid values are in the range 2.88 to 3.78 and 0 to 0.76 respectively.For the low quality wine most of the pH and citric acid values are in the range 2.74 to 3.90 and 0 to 0.25 respectively.
+
+#Multivariate Analysis
+
+Following are the few interesting relation I observed 
+1)When the fixed acidity is between 4 and 14.And the volaile acidity is less than 1.5,then the quality wine seem to be high.
+2)When the sulphates are in the range 0.5 to 1.5 and the citric acid is in the range 0 to 0.75, the quality of wine seem to be high.
+3)When the pH value is between 3 and 3.75 and sulphates value between 0.5 and 1.5 , the wine is of high quality.
+4)On top of all these the chlorides value should be in the range 0.012 to 0.358.
+
+So, I think that when all the above conditions are met the quality of wine would most likely be high.
+
+#Plot One
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(quality),data=rw)+
+geom_bar(binwidth=0.1,fill=I("#0000FF"),color=I("black"))+
+  ylab("Number of red wine sample")
+```
+
+#Description One
+
+Most of the red wine samples seem to be of quality 5 and 6.Very high quality wine 8 seem to be less in number.
+
+#Plot Two
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(as.factor(quality),sulphates),data=rw)+
+   geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue')+
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)+
+  ylab("Sulphates(g / dm3)")+
+  xlab("quality")+
+  ggtitle("Quality vs sulphates")
+
+```
+
+#Description Two
+
+In the above plot, I have just included sulphates but even chlorides is also proportional to the quality.Other two parameters like pH and citric acid are indirectly proportional to the quality of wine
+
+#Plot three
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(citric.acid,sulphates,color=as.factor(quality)),data=rw)+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+
+  ggtitle("citric acid Vs sulphates by Quality")+
+  xlab("citric acid(g / dm^3)")+
+  ylab("sulphates(g / dm3)")
+
+```
+
+#Description Three
+
+The above plot shows the relation among the citric acid, sulphates and quality.With the range 0 to 0.75 g/dm^3 citric acid and range of 0to 1.5 fg/dm^3,it is most likely that red wine is going to be high quality.
+
+Not only combination of citric acid and sulphates might give high quality wine.Even with specific range of values of pH and chlorides also affect the quality wine.Therefore pH,chlorides,citric acid and sulphates are most likely going to affect the quality of red wine.
+
+#Reflection
+
+This dataset has 1599 with 12 variables. I started my analysis with seeing the distribution of all the variables.I could notice that the distribution of many variables are positively skewed.The shocking thing is that most of the wine samples are rated with quality 5 and 6. Very few are rated 8.I thought that different variables could have diferent impact on quality of wine.So,I tried to see how the quality changes with different variable.I found that only four variables ie citric acid, sulphates, pH and chlorides have some kind of pattern with the quality of wine.
+
+Once I found out this,I thought that some combination of these variable might impact the quality of wine.So,I did some experiments with a combination few variables and I found out that with some specific range of few variable values, quality of the wine seemed to go high.
+
+The problems, I faced is to find the variables which have higher chances of affecting the quality of wine. Because there is no exact variable which might affect the quality of wine.It is a combination of many.I was happy when I found four variables are making some kind of pattern in two variable analysis.I have done the whole exploration and concluded taking at max 3 variables into consideration.Since, all the variables are chemical properties we might get better understanding on how the quality of wine changes by taking many vriables into consideration.
